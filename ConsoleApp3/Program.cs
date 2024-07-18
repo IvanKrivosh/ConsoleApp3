@@ -39,6 +39,7 @@ namespace ConsoleApp3
     interface ITarget
     {
         int Health { get; }
+
         void SetDamage(int damage);
     }
 
