@@ -8,7 +8,7 @@ namespace ConsoleApp3
         {
             Weapon weapon = new Weapon(1, 2);
             Bot bot = new Bot(weapon);
-            Player player = new Player(-50);
+            Player player = new Player(50);
 
             bot.OnSeePlayer(player);
 
@@ -23,8 +23,8 @@ namespace ConsoleApp3
 
         public Weapon(int damage, int bullets)
         {            
-            Utils.CheckIntRangeVariable(damage, nameof(damage));
-            Utils.CheckIntRangeVariable(bullets, nameof(bullets));
+            Utils.CompareIntGreaterZero(damage, nameof(damage));
+            Utils.CompareIntGreaterZero(bullets, nameof(bullets));
             _damage = damage;
             _bullets = bullets;
         }
@@ -32,7 +32,7 @@ namespace ConsoleApp3
         public void Fire(ITarget target)
         {            
             target.SetDamage(_damage);
-            _bullets -= 1;
+            _bullets--;
         }
     }
 
@@ -47,8 +47,7 @@ namespace ConsoleApp3
     {
         public Player(int health)
         {
-            Utils.CheckIntRangeVariable(health, nameof(health));
-
+            Utils.CompareIntGreaterZero(health, nameof(health));
             Health = health;
         }
 
@@ -56,7 +55,7 @@ namespace ConsoleApp3
 
         public void SetDamage(int damage)
         {
-            Utils.CheckIntRangeVariable(damage, nameof(damage));
+            Utils.CompareIntGreaterZero(damage, nameof(damage));
 
             if (Health > 0)
                 Health -= damage;
@@ -69,21 +68,34 @@ namespace ConsoleApp3
 
         public Bot(Weapon weapon)
         {
+            Utils.CompareObjectIsNotNull(weapon, nameof(weapon));
             _weapon = weapon;
         }
 
         public void OnSeePlayer(Player player)
         {
+            Utils.CompareObjectIsNotNull(player, nameof(player));
             _weapon.Fire(player);
         }
     }
 
     static class Utils
     {
-        static public void CheckIntRangeVariable(int value, string name)
+        public static void CompareIntGreaterValue(int value, string name, int target)
         {
-            if (value <= 0) 
+            if (value <= target) 
                 throw new ArgumentOutOfRangeException(name);
+        }
+
+        public static void CompareIntGreaterZero(int value, string name)
+        {
+            CompareIntGreaterValue(value, name, 0);
+        }
+
+        public static void CompareObjectIsNotNull(object instance, string name)
+        {
+            if (instance == null)
+                throw new ArgumentNullException(name);
         }
     }
 }
