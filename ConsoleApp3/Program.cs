@@ -30,7 +30,12 @@ namespace ConsoleApp3
         }
 
         public void Fire(ITarget target)
-        {            
+        {
+            Utils.CompareObjectIsNotNull(target, nameof(target));
+
+            if (_bullets == 0)
+              throw new InvalidOperationException("There are not enough bullets");
+
             target.SetDamage(_damage);
             _bullets--;
         }
@@ -64,12 +69,11 @@ namespace ConsoleApp3
 
     class Bot
     {
-        private Weapon _weapon;
+        private readonly Weapon _weapon;
 
         public Bot(Weapon weapon)
-        {
-            Utils.CompareObjectIsNotNull(weapon, nameof(weapon));
-            _weapon = weapon;
+        {            
+            _weapon = weapon ?? throw new ArgumentNullException();
         }
 
         public void OnSeePlayer(Player player)
@@ -94,8 +98,7 @@ namespace ConsoleApp3
 
         public static void CompareObjectIsNotNull(object instance, string name)
         {
-            if (instance == null)
-                throw new ArgumentNullException(name);
+            ArgumentNullException.ThrowIfNull(instance);
         }
     }
 }
